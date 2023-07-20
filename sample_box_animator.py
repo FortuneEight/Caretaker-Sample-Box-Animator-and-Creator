@@ -125,8 +125,9 @@ def sample_box(requested_function):
         vid_file_name = input("What would you like to name the video? ")
         print("Generating Video and Saving...")
 
-        image_folder = "Sample_Box_Images"  # make sure to use your folder
+        image_folder = ""  # make sure to use your folder
         # video_name = f'{vid_file_name}.avi'
+        os.chdir(image_folder)
 
         images = [
             img
@@ -135,7 +136,7 @@ def sample_box(requested_function):
         ]
 
         clip = moviepy.video.io.ImageSequenceClip.ImageSequenceClip(images, fps=60)
-        clip.write_videofile(f"Sample_Box_Animations/{vid_file_name}.mp4")
+        clip.write_videofile(f"{image_folder}{vid_file_name}.mp4")
 
         # # Array images should only consider
         # # the image files ignoring others if any
@@ -166,6 +167,6 @@ def sample_box(requested_function):
         convert_avi_to_mp4(avi_fp, name)
 
 
-sample_box(0)
+# sample_box(0)
 sample_box(1)
 # sample_box(2)
