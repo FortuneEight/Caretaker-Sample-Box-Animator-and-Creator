@@ -1,9 +1,9 @@
 from pydub import AudioSegment
-from pydub.utils import get_array_type
 from PIL import Image
 import os
 import time
 import moviepy.video.io.ImageSequenceClip
+import winsound
 
 os.system("cls")
 
@@ -29,17 +29,6 @@ def normalize(array):
     return new_array
 
 
-# copied lol
-def convert_avi_to_mp4(avi_file_path, output_name):
-    os.popen(
-        "ffmpeg -i {input} -ac 2 -b:v 2000k -c:a aac -c:v libx264 -b:a 160k -vprofile high -bf 0 -strict experimental -f mp4 {output}.mp4".format(
-            input=avi_file_path, output=output_name
-        )
-    )
-    return True
-
-
-# requested_function = int(input("Which function? 0 = generate images, 1 = generate video, 2 = avi to mp4. "))
 def sample_box(requested_function):
     if requested_function == 0:
         img_file_name = input("What is the file name of the image? ")
@@ -123,9 +112,10 @@ def sample_box(requested_function):
 
     if requested_function == 1:
         vid_file_name = input("What would you like to name the video? ")
+        image_folder = input("What is the image_folder? ")  # make sure to use your folder
+        save_folder = input("Where would you like to save the video to? ")
         print("Generating Video and Saving...")
 
-        image_folder = ""  # make sure to use your folder
         # video_name = f'{vid_file_name}.avi'
         os.chdir(image_folder)
 
@@ -136,37 +126,9 @@ def sample_box(requested_function):
         ]
 
         clip = moviepy.video.io.ImageSequenceClip.ImageSequenceClip(images, fps=60)
-        clip.write_videofile(f"{image_folder}{vid_file_name}.mp4")
-
-        # # Array images should only consider
-        # # the image files ignoring others if any
-        # frame = cv2.imread(os.path.join(image_folder, images[0]))
-
-        # # setting the frame width, height width
-        # # the width, height of first image
-        # height, width, _ = frame.shape
-
-        # video = cv2.VideoWriter(video_name, 0, 60, (width, height))
-
-        # # Appending the images to the video one by one
-        # i = 0
-        # percent_hit = int(len(images) / 10)
-        # for image in images:
-        #     video.write(cv2.imread(os.path.join(image_folder, image)))
-        #     i += 1
-        #     if i % percent_hit == 0:
-        #         print(f"{round((i / len(images)) * 100)}% complete.")
-
-        # # Deallocating memories taken for window creation
-        # cv2.destroyAllWindows()
-        # video.release()  # releasing the video generated
-    if requested_function == 2:
-        avi_fp = input("File path to avi? ")
-        length = len(avi_fp)
-        name = "Sample_Box_Animations/" + avi_fp[0 : (length - 4)]
-        convert_avi_to_mp4(avi_fp, name)
+        clip.write_videofile(f"{save_folder}{vid_file_name}.mp4")
 
 
-# sample_box(0)
+sample_box(0)
 sample_box(1)
-# sample_box(2)
+winsound.Beep(440, 10)
