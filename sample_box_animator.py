@@ -34,8 +34,8 @@ def sample_box(requested_function):
         img_file_name = input("What is the file name of the image? ")
         asset = Image.open(img_file_name)
 
-        sng_file_name = input("What is the file name of the comparison mp3? ")
-        song = AudioSegment.from_file(sng_file_name, format="mp3")
+        sng_file_name = input("What is the file name of the comparison mp3/wav/flac? ")
+        song = AudioSegment.from_file(sng_file_name)
 
         smoothness = int(
             input(
