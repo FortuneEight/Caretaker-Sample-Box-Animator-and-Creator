@@ -103,7 +103,7 @@ def sample_box(requested_function):
                 temp_img.putalpha(int(value * 255))
                 bg = Image.new("RGB", temp_img.size, (0, 0, 0))
                 bg.paste(temp_img, temp_img)
-                bg.save(f"Sample_Box_Images\image{str(i).zfill(4)}.jpg")
+                bg.save(f"Sample_Box_Images\image{str(i).zfill(6)}.jpg")
                 i += 1
                 if i % percent_hit == 0:
                     print(f"{round((i / len(vol_levels)) * 100)}% complete.")
