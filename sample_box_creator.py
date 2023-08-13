@@ -13,17 +13,21 @@ COVER_FILE_PATH = None
 TOP_FONT_TTF_PATH = None
 BOTTOM_FONT_TTF_PATH = None
 SAVE_FILE_NAME = None
+TRANSPARENT_BACKGROUND = None
 
 # FORTUNE SETTINGS
 # Tahoma Bold for Top Font (53 pt)
 # Tahoma Regular for Bottom Font (46 pt)
 
 
-def sample_box_creator(cover_file_path, direction, top_font_ttf, top_font_size, bottom_font_ttf, bottom_font_size, top_texts, bottom_texts, save_file_name):
+def sample_box_creator(cover_file_path, direction, top_font_ttf, top_font_size, bottom_font_ttf, bottom_font_size, top_texts, bottom_texts, save_file_name, transparent):
     rect_shape = [(320, 193), (759.9, 632.9)]
 
     # create new transparent image
-    main_img = img.new(mode='RGB', size=(1080,1080))
+    if transparent == True:
+        main_img = img.new('RGBA', (1080,1080), (0,0,0,0))
+    else:
+        main_img = img.new('RGB', (1080,1080), (0,0,0))
 
     # open cover image and resize
     cover_img = img.open(cover_file_path)
@@ -93,19 +97,21 @@ def sample_box_creator(cover_file_path, direction, top_font_ttf, top_font_size, 
         w = draw.textlength(top_texts[i], font=top_font)
         position = ((1080 - w) / 2, y_val)
         bbox = draw.textbbox(position, top_texts[i], font=top_font)
-        draw.rectangle(bbox, fill="black")
+        if transparent == False:
+            draw.rectangle(bbox, fill="black")
         draw.text(position, top_texts[i], font=top_font, fill=(255,255,255))
         if i == len(top_texts) - 1:
-            y_val += (bottom_font_px * 1.2)
+            y_val += (bottom_font_px)
         else:
-            y_val += (bottom_font_px * 1.2)
+            y_val += (top_font_px)
 
     # add bottom text(s) - creator, album, year
     for i in range(len(bottom_texts)):
         w = draw.textlength(bottom_texts[i], font=bottom_font)
         position = ((1080 - w) / 2, y_val)
         bbox = draw.textbbox(position, bottom_texts[i], font=bottom_font)
-        draw.rectangle(bbox, fill="black")
+        if transparent == False:
+            draw.rectangle(bbox, fill="black")
         draw.text(position, bottom_texts[i], font=bottom_font, fill=(255,255,255))
         y_val += (bottom_font_px)
 
@@ -139,6 +145,7 @@ def generate_sample_box():
     global TOP_FONT_TTF_PATH
     global BOTTOM_FONT_TTF_PATH
     global SAVE_FILE_NAME
+    global TRANSPARENT_BACKGROUND
 
     update_progress_bar(0)
 
@@ -147,13 +154,14 @@ def generate_sample_box():
     bottom_font_size = int(txt_03.get(1.0, "end-1c"))
     top_texts = txt_04.get(1.0, "end-1c").split("^")
     bottom_texts = txt_05.get(1.0, "end-1c").split("^")
+    TRANSPARENT_BACKGROUND = True if var1.get() == 1 else False
 
     filetypes = [("PNG Files", "*.png")]
     SAVE_FILE_NAME = fd.asksaveasfilename(title="Save as PNG File", filetypes=filetypes)
 
     update_progress_bar(50)
 
-    sample_box_creator(COVER_FILE_PATH, direction, TOP_FONT_TTF_PATH, top_font_size, BOTTOM_FONT_TTF_PATH, bottom_font_size, top_texts, bottom_texts, SAVE_FILE_NAME)
+    sample_box_creator(COVER_FILE_PATH, direction, TOP_FONT_TTF_PATH, top_font_size, BOTTOM_FONT_TTF_PATH, bottom_font_size, top_texts, bottom_texts, SAVE_FILE_NAME, TRANSPARENT_BACKGROUND)
 
     update_progress_bar(100)
 
@@ -166,6 +174,8 @@ ic = "iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAIGNIUk0AAHomAACAhAAA+gAAAI
 
 
 app.iconphoto(True, PhotoImage(data=ic))
+
+var1 = IntVar()
 
 lbl_title = Label(app, text = "F8's Sample Box Generator", font="Helvetica 18 bold")
 lbl_title.grid(row=0, column=0, padx=10, pady=10, columnspan=2)
@@ -194,35 +204,41 @@ lbl_07.grid(row=7, column=0, columnspan=1, padx=5, pady=5, sticky="w")
 lbl_08 = Label(app, text="Bottom texts (seperate lines by ^): ", font="Helvetica")
 lbl_08.grid(row=8, column=0, columnspan=1, padx=5, pady=5, sticky="w")
 
+lbl_09 = Label(app, text="Transparent background? ", font="Helvetica")
+lbl_09.grid(row=9, column=0, columnspan=1, padx=5, pady=5, sticky="w")
+
 btn_01 = Button(app, text="Open", command=cover_select_file)
-btn_01.grid(row=1, column=1, columnspan=1, padx=5, pady=5)
+btn_01.grid(row=1, column=1, columnspan=1, padx=5, pady=5, sticky="e")
 
 btn_02 = Button(app, text="Open", command=topttf_select_file)
-btn_02.grid(row=3, column=1, columnspan=1, padx=5, pady=5)
+btn_02.grid(row=3, column=1, columnspan=1, padx=5, pady=5, sticky="e")
 
 btn_03 = Button(app, text="Open", command=bottomttf_select_file)
-btn_03.grid(row=4, column=1, columnspan=1, padx=5, pady=5)
+btn_03.grid(row=4, column=1, columnspan=1, padx=5, pady=5, sticky="e")
 
 btn_04 = Button(app, text="Save", command=generate_sample_box)
-btn_04.grid(row=9, column=0, columnspan=2, padx=5, pady=5)
+btn_04.grid(row=10, column=0, columnspan=2, padx=5, pady=5)
 
 txt_01 = Text(app, height=1, width=8, font="Helvetica")
-txt_01.grid(row=2, column=1, padx=5, pady=5, sticky="w")
+txt_01.grid(row=2, column=1, padx=5, pady=5, sticky="e")
 
 txt_02 = Text(app, height=1, width=8, font="Helvetica")
-txt_02.grid(row=5, column=1, padx=5, pady=5, sticky="w")
+txt_02.grid(row=5, column=1, padx=5, pady=5, sticky="e")
 
 txt_03 = Text(app, height=1, width=8, font="Helvetica")
-txt_03.grid(row=6, column=1, padx=5, pady=5, sticky="w")
+txt_03.grid(row=6, column=1, padx=5, pady=5, sticky="e")
 
-txt_04 = Text(app, height=1, width=8, font="Helvetica")
-txt_04.grid(row=7, column=1, padx=5, pady=5, sticky="w")
+txt_04 = Text(app, height=2, width=18, font="Helvetica")
+txt_04.grid(row=7, column=1, padx=5, pady=5, sticky="e")
 
-txt_05 = Text(app, height=1, width=8, font="Helvetica")
-txt_05.grid(row=8, column=1, padx=5, pady=5)
+txt_05 = Text(app, height=2, width=18, font="Helvetica")
+txt_05.grid(row=8, column=1, padx=5, pady=5, sticky="e")
 
-pb = Progressbar(app, orient='horizontal', mode='determinate', length=300)
-pb.grid(row=10,column=0, padx=5, pady=5, columnspan=2)
+chk_01 = Checkbutton(app, variable=var1, onvalue=1, offvalue=0)
+chk_01.grid(row=9, column=1, padx=5, pady=5)
+
+pb = Progressbar(app, orient='horizontal', mode='determinate', length=350)
+pb.grid(row=11,column=0, padx=5, pady=5, columnspan=2)
 
 app.mainloop()
 
